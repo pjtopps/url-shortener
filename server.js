@@ -10,7 +10,11 @@ app.get('*', (req, res) => {
   
   ans.ipaddress = req.ip;
   
-  ans.
+  ans.headers = req.headers;
+  
+  ans.language = req.headers['accept-language'];
+  
+  console.log(req.ip, req.headers);
   
   res.send(ans);
 });
