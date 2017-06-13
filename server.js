@@ -4,10 +4,15 @@ var app = express();
 
 app.use(express.static('public'));
 
+var ans = {};
 
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
+app.get('*', (req, res) => {
+  
+  ans.ipaddress = req.ip;
+  
+  ans.
+  
+  res.send(ans);
 });
 
 app.listen(process.env.PORT, function () {
