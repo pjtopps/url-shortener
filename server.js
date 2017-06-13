@@ -14,6 +14,8 @@ app.get('*', (req, res) => {
   
   ans.software = req.headers['user-agent'].split(/[()]/g)[1];
   
+  console.log(req.headers);
+  
   res.send(ans);
 });
 
