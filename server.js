@@ -8,13 +8,11 @@ var ans = {};
 
 app.get('*', (req, res) => {
   
-  ans.ipaddress = req.ip;
+  ans.ipaddress = req.headers['x-forwarded-for'].split(',')[0];
   
-  ans.headers = req.headers;
+  ans.language = req.headers['accept-language'].split(',')[0];
   
-  ans.language = req.headers['accept-language'];
-  
-  console.log(req.ip, req.headers);
+  ans.software = req.headers['user-agent'].split(/[()]/g)[1];
   
   res.send(ans);
 });
