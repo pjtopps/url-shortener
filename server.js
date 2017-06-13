@@ -3,6 +3,7 @@
  * the verification process may break
  * ***************************************************/
 
+//hello
 'use strict';
 
 var fs = require('fs');
