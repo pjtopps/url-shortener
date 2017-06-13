@@ -9,8 +9,10 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
-  app.use(express.static(__dirname + 'views/index.html'));
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 app.listen(process.env.PORT, function () {
