@@ -8,15 +8,7 @@ var ans = {};
 
 app.get('*', (req, res) => {
   
-  ans.ipaddress = req.headers['x-forwarded-for'].split(',')[0];
-  
-  ans.language = req.headers['accept-language'].split(',')[0];
-  
-  ans.software = req.headers['user-agent'].split(/[()]/g)[1];
-  
-  console.log(req.headers);
-  
-  res.send(ans);
+  c
 });
 
 app.listen(process.env.PORT, function () {
