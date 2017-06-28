@@ -8,7 +8,7 @@ var ans = {};
 
 app.get('*', (req, res) => {
   
-  c
+  console.log(req.para)
 });
 
 app.listen(process.env.PORT, function () {
