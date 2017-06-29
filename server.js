@@ -12,7 +12,7 @@ app.get('*', (req, res) => {
   console.log(req.params)
   
   var http = require('http'),
-      options = {method: 'HEAD', host: req.params[0].slice(1), port: 80, path: '/'};
+      options = {method: 'HEAD', host: req.originalUrl.slice(1), port: 80, path: '/'};
   
   console.log(options.host);
       
