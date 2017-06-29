@@ -9,15 +9,12 @@ var ans = {};
 
 app.get('*', (req, res) => {
   
-  console.log(req.params)
   
   var http = require('http'),
       options = {method: 'HEAD', host: req.originalUrl.slice(1), port: 80, path: '/'};
   
-  console.log(options.host);
       
   var req = http.request(options, function(r) {
-          console.log(JSON.stringify(r.headers));
           if (r.headers['content-type']) console.log('you may pass....')
       });
   req.end();
