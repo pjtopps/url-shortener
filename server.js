@@ -9,13 +9,18 @@ var ans = {};
 
 app.get('*', (req, res) => {
   
-  //console.log(req.params)
+  console.log(req.params)
   
-  var options = {method: 'HEAD', host: req.params}
+  var http = require('http'),
+      options = {method: 'HEAD', host: req.params[0], port: 80, path: '/'};
   
-  var reqq = http.request(options, function(response) {
-    console.log(JSON.stringify(response));
-  });
+  console.log(options.host);
+      
+  var req = http.request(options, function(r) {
+          console.log(JSON.stringify(r.headers));
+          if (r.headers['content-type']) console.log('you may pass....')
+      });
+  req.end();
 });
 
 app.listen(process.env.PORT, function () {
