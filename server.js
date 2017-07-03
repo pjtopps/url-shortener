@@ -20,14 +20,18 @@ app.get('*', (req, res) => {
       
   var check = http.request(options, function(r) {
           if (r.headers['content-type']) {
+            
             mongo.connect(url, function(err, db) {
               if (err) throw err;
               
               var collection = db.collection('ips');
               
-              collection.find(toShorten);
+              var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray();
+              console.log(client);
               
+              db.close();
             });
+            
           }
       });
   check.end();
