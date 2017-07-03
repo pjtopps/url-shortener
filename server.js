@@ -28,36 +28,31 @@ app.get('*', (req, res) => {
               
               var collection = db.collection('ips');
               
+              collection.insertOne({
+                    ipAddress: clientsIp
+                  });
+              
               console.log(clientsIp);
               
-              var cursor = collection.find({}).toArray(function(err, d) {
-                console.log(d);
-              })
-              
-              collection.find({ipAdress: '94.197.121.249'}).toArray(function(err, docs) {
+              collection.find({ipAddress: clientsIp}).toArray(function(err, docs) {
                 var randomNum = Math.round(9999 * Math.random());
                 console.log(docs);
                 
                 if (docs.length === 0) {
                   console.log('a new addition...');
                   
-                  collection.insertOne({
-                    ipAddress: clientsIp,
-                    urls: {
-                      "www.google.com": randomNum
-                    }
-                  }).then(function() {
-                    console.log('inserted');
-                  });
+                  
+                  
                 }
                 else {
                   console.log('in here');
-                  
+                  /*
                   collection.updateOne({
                     ipAddress: clientsIp
                   }, {
                     $set: {toShorten: randomNum}
-                  });
+                  });*/
+                  
                 }
               });
               
