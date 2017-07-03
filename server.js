@@ -12,10 +12,10 @@ app.use(express.static('public'));
 
 app.get('*', (req, res) => {
   
-  
+  var toShorten = req.originalUrl.slice(1);
   
   var http = require('http'),
-      options = {method: 'HEAD', host: req.originalUrl.slice(1), port: 80, path: '/'};
+      options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
       
   var check = http.request(options, function(r) {
@@ -23,8 +23,9 @@ app.get('*', (req, res) => {
             mongo.connect(url, function(err, db) {
               if (err) throw err;
               
-              var collection = db.collection(req.headers['x-forwarded-for'].split(',')[0]);
+              var collection = db.collection('ips');
               
+              collection.find(toShorten);
               
             });
           }
