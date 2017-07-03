@@ -13,7 +13,7 @@ app.use(express.static('public'));
 app.get('*', (req, res) => {
   
   var toShorten = req.originalUrl.slice(1),
-      clientsIp = req.headers['x-forwarded-for'].split(',')[0];
+      clientsIp = "" + req.headers['x-forwarded-for'].split(',')[0];
   
   var http = require('http'),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
@@ -27,7 +27,9 @@ app.get('*', (req, res) => {
               if (err) throw err;
               
               var collection = db.collection('ips');
-                            
+              
+              console.log(clientsIp);
+              
               var client = collection.find({ipAdress: clientsIp}).toArray(function(err, docs) {
                 var randomNum = Math.round(9999 * Math.random());
                 console.log(docs);
