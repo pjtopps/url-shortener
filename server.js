@@ -22,6 +22,7 @@ app.get('*', (req, res) => {
   
       
   var check = http.request(options, function(r) {
+    
           if (r.headers['content-type']) {
             console.log('passed check');
             
@@ -34,16 +35,22 @@ app.get('*', (req, res) => {
                 ipAddress: clientsIp
               }, {
                 $set: {[replaced]: randomNum}
+              }, {
+                'upsert': 
               })
                 .then(function() {
                 console.log('got to be here');
                 db.close();
-                
               });
+              
             });
+            
           }
+    
       });
+  
   check.end();
+  
 });
 
 app.listen(process.env.PORT, function () {
