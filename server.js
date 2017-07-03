@@ -27,12 +27,15 @@ app.get('*', (req, res) => {
               
               var collection = db.collection('ips');
               
-              collection.insertOne({
-                ipAddress: req.headers['x-forwarded-for'].split(',')[0]
-              });
+              var cursor = collection.find({}).toArray();
+              console.log(cursor);
               
-              var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray();
-              console.log(client);
+              /*collection.insertOne({
+                ipAddress: req.headers['x-forwarded-for'].split(',')[0]
+              });*/
+              
+              //var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray();
+              //console.log(client);
               
               db.close();
             });
