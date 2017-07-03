@@ -12,7 +12,8 @@ app.use(express.static('public'));
 
 app.get('*', (req, res) => {
   
-  var toShorten = req.originalUrl.slice(1),
+  var toShorten = req.originalUrl.slice(1).replace(reg, '-'),
+      reg = /\./g,
       clientsIp = req.headers['x-forwarded-for'].split(',')[0],
       randomNum = Math.round(9999 * Math.random());
   
@@ -23,6 +24,7 @@ app.get('*', (req, res) => {
   var check = http.request(options, function(r) {
           if (r.headers['content-type']) {
             console.log('passed check');
+            console.log(clientsIp);
             
             mongo.connect(url, function(err, db) {
               if (err) throw err;
@@ -32,8 +34,9 @@ app.get('*', (req, res) => {
               collection.update({
                 ipAddress: clientsIp
               }, {
-                $setOnInsert: {[toShorten]: randomNum}
+                $set: {["'" + toShorten + "'"]: randomNum}
               }).then(function() {
+                console.log('got to be here');
                 db.close();
               });
               
