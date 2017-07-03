@@ -3,7 +3,8 @@ var fs = require('fs'),
     http = require('http'),
     app = express(),
     ans = {},
-    url = "mongodb://petey:randomuser@ds143532.mlab.com:43532/urls";
+    url = "mongodb://petey:randomuser@ds143532.mlab.com:43532/urls",
+    mongo = require('mongodb').MongoClient;
 
 app.use(express.static('public'));
 
@@ -17,7 +18,12 @@ app.get('*', (req, res) => {
   
       
   var req = http.request(options, function(r) {
-          if (r.headers['content-type']) console.log('you may pass....')
+          if (r.headers['content-type']) {
+            mongo.connect(url, function(err, bd) {
+              if (err) throw err;
+              
+            });
+          }
       });
   req.end();
 });
