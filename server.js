@@ -30,11 +30,14 @@ app.get('*', (req, res) => {
               var collection = db.collection('ips');
               
               collection.update({
-                ipAddress: clientsIp;
+                ipAddress: clientsIp
               }, {
-                $setOnInsert: {[toShorten]: }
+                $setOnInsert: {[toShorten]: randomNum}
+              }).then(function() {
+                db.close();
               });
               
+              /*
               collection.insertOne({
                     ipAddress: clientsIp
                   });
@@ -57,12 +60,13 @@ app.get('*', (req, res) => {
                     ipAddress: clientsIp
                   }, {
                     $set: {toShorten: randomNum}
-                  });*/
+                  });*//*
                   
                 }
               });
               
               db.close();
+            */
             });
             
           }
