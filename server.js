@@ -13,7 +13,7 @@ app.use(express.static('public'));
 app.get('*', (req, res) => {
   
   var toShorten = req.originalUrl.slice(1),
-      clientsIp = "" + req.headers['x-forwarded-for'].split(',')[0];
+      clientsIp = req.headers['x-forwarded-for'].split(',')[0];
   
   var http = require('http'),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
@@ -30,7 +30,7 @@ app.get('*', (req, res) => {
               
               console.log(clientsIp);
               
-              var client = collection.find({ipAdress: clientsIp}).toArray(function(err, docs) {
+              var client = collection.find({ipAdress: "'" + clientsIp + "'"}).toArray(function(err, docs) {
                 var randomNum = Math.round(9999 * Math.random());
                 console.log(docs);
                 
@@ -40,8 +40,10 @@ app.get('*', (req, res) => {
                   collection.insertOne({
                     ipAddress: clientsIp,
                     urls: {
-                      [toShorten]: randomNum
+                      "www.google.com": randomNum
                     }
+                  }).then(function() {
+                    console.log('inserted');
                   });
                 }
                 else {
@@ -51,11 +53,11 @@ app.get('*', (req, res) => {
                     ipAddress: clientsIp
                   }, {
                     $set: {toShorten: randomNum}
-                  })
+                  });
                 }
               });
               
-              db.close();
+              
             });
             
           }
