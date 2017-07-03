@@ -12,14 +12,11 @@ app.use(express.static('public'));
 
 app.get('*', (req, res) => {
   
-  console.log('everything ok?')
-  //var reg = /\./g;
   var toShorten = req.originalUrl.slice(1),
+      replaced = toShorten.replace(/[.]/g, '-'),
       clientsIp = req.headers['x-forwarded-for'].split(',')[0],
       randomNum = Math.round(9999 * Math.random());
-  
-  toShorten = toShorten.replace('/\./g', '-');
-  
+    
   var http = require('http'),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
@@ -27,7 +24,6 @@ app.get('*', (req, res) => {
   var check = http.request(options, function(r) {
           if (r.headers['content-type']) {
             console.log('passed check');
-            console.log(toShorten);
             
             mongo.connect(url, function(err, db) {
               if (err) throw err;
@@ -37,44 +33,14 @@ app.get('*', (req, res) => {
               collection.update({
                 ipAddress: clientsIp
               }, {
-                $set: {[toShorten]: randomNum}
-              }).then(function() {
+                $set: {[replaced]: randomNum}
+              })
+                .then(function() {
                 console.log('got to be here');
                 db.close();
-              });
-              
-              /*
-              collection.insertOne({
-                    ipAddress: clientsIp
-                  });
-              
-              
-              collection.find({ipAddress: clientsIp}).toArray(function(err, docs) {
                 
-                console.log(docs);
-                
-                if (docs.length === 0) {
-                  console.log('a new addition...');
-                  
-                  
-                  
-                }
-                else {
-                  console.log('in here');
-                  /*
-                  collection.updateOne({
-                    ipAddress: clientsIp
-                  }, {
-                    $set: {toShorten: randomNum}
-                  });*//*
-                  
-                }
               });
-              
-              db.close();
-            */
             });
-            
           }
       });
   check.end();
