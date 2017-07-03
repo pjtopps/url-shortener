@@ -15,9 +15,7 @@ app.get('*', (req, res) => {
   var toShorten = req.originalUrl.slice(1),
       replaced = toShorten.replace(/[.]/g, '-'),
       clientsIp = req.headers['x-forwarded-for'].split(',')[0],
-      randomNum = Math.round(9999 * Math.random());
-    
-  var http = require('http'),
+      randomNum = Math.round(9999 * Math.random()),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
       
@@ -36,7 +34,7 @@ app.get('*', (req, res) => {
               }, {
                 $set: {[replaced]: randomNum}
               }, {
-                'upsert': 
+                'upsert': true
               })
                 .then(function() {
                 console.log('got to be here');
