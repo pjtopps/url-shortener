@@ -12,10 +12,13 @@ app.use(express.static('public'));
 
 app.get('*', (req, res) => {
   
-  var toShorten = req.originalUrl.slice(1).replace(reg, '-'),
-      reg = /\./g,
+  console.log('everything ok?')
+  //var reg = /\./g;
+  var toShorten = req.originalUrl.slice(1),
       clientsIp = req.headers['x-forwarded-for'].split(',')[0],
       randomNum = Math.round(9999 * Math.random());
+  
+  toShorten = toShorten.replace('/\./g', '-');
   
   var http = require('http'),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
@@ -24,7 +27,7 @@ app.get('*', (req, res) => {
   var check = http.request(options, function(r) {
           if (r.headers['content-type']) {
             console.log('passed check');
-            console.log(clientsIp);
+            console.log(toShorten);
             
             mongo.connect(url, function(err, db) {
               if (err) throw err;
@@ -34,7 +37,7 @@ app.get('*', (req, res) => {
               collection.update({
                 ipAddress: clientsIp
               }, {
-                $set: {["'" + toShorten + "'"]: randomNum}
+                $set: {[toShorten]: randomNum}
               }).then(function() {
                 console.log('got to be here');
                 db.close();
