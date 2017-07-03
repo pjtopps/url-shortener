@@ -30,7 +30,11 @@ app.get('*', (req, res) => {
               
               console.log(clientsIp);
               
-              var client = collection.find({ipAdress: "'" + clientsIp + "'"}).toArray(function(err, docs) {
+              var cursor = collection.find({}).toArray(function(err, d) {
+                console.log(d);
+              })
+              
+              collection.find({ipAdress: '94.197.121.249'}).toArray(function(err, docs) {
                 var randomNum = Math.round(9999 * Math.random());
                 console.log(docs);
                 
@@ -57,7 +61,7 @@ app.get('*', (req, res) => {
                 }
               });
               
-              
+              db.close();
             });
             
           }
