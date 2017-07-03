@@ -13,19 +13,23 @@ app.use(express.static('public'));
 app.get('*', (req, res) => {
   
   
+  
   var http = require('http'),
       options = {method: 'HEAD', host: req.originalUrl.slice(1), port: 80, path: '/'};
   
       
-  var req = http.request(options, function(r) {
+  var check = http.request(options, function(r) {
           if (r.headers['content-type']) {
-            mongo.connect(url, function(err, bd) {
+            mongo.connect(url, function(err, db) {
               if (err) throw err;
+              
+              var collection = db.collection(req.headers['x-forwarded-for'].split(',')[0]);
+              
               
             });
           }
       });
-  req.end();
+  check.end();
 });
 
 app.listen(process.env.PORT, function () {
