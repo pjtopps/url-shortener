@@ -1,11 +1,13 @@
-var fs = require('fs');
-var express = require('express');
-var http = require('http');
-var app = express();
+var fs = require('fs'),
+    express = require('express'),
+    http = require('http'),
+    app = express(),
+    ans = {},
+    url = "mongodb://petey:randomuser@ds143532.mlab.com:43532/urls";
 
 app.use(express.static('public'));
 
-var ans = {};
+
 
 app.get('*', (req, res) => {
   
