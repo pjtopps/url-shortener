@@ -26,14 +26,12 @@ app.get('*', (req, res) => {
               if (err) throw err;
               
               var collection = db.collection('ips');
-              
-              /**/
-              
+                            
               var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray(function(err, docs) {
+                var randomNum = (9999 * Math.random()).round();
+                
                 if (docs.length === 0) {
                   console.log('a new addition...');
-                  
-                  var randomNum = (9999 * Math.random()).round();
                   
                   collection.insertOne({
                     ipAddress: req.headers['x-forwarded-for'].split(',')[0],
@@ -43,7 +41,11 @@ app.get('*', (req, res) => {
                   });
                 }
                 else {
-                  
+                  collection.updateOne({
+                    ipAddress: req.headers['x-forwarded-for'].split(',')[0]
+                  }, {
+                    $set: {toShorten: randomNum}
+                  })
                 }
               });
               
