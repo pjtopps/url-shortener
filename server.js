@@ -12,7 +12,8 @@ app.use(express.static('public'));
 
 app.get('*', (req, res) => {
   
-  var toShorten = req.originalUrl.slice(1);
+  var toShorten = req.originalUrl.slice(1),
+      clientsIp = req.headers['x-forwarded-for'].split(',')[0];
   
   var http = require('http'),
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
@@ -27,22 +28,25 @@ app.get('*', (req, res) => {
               
               var collection = db.collection('ips');
                             
-              var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray(function(err, docs) {
-                var randomNum = (9999 * Math.random()).round();
+              var client = collection.find({ipAdress: clientsIp}).toArray(function(err, docs) {
+                var randomNum = Math.round(9999 * Math.random());
+                console.log(docs);
                 
                 if (docs.length === 0) {
                   console.log('a new addition...');
                   
                   collection.insertOne({
-                    ipAddress: req.headers['x-forwarded-for'].split(',')[0],
+                    ipAddress: clientsIp,
                     urls: {
                       [toShorten]: randomNum
                     }
                   });
                 }
                 else {
+                  console.log('in here');
+                  
                   collection.updateOne({
-                    ipAddress: req.headers['x-forwarded-for'].split(',')[0]
+                    ipAddress: clientsIp
                   }, {
                     $set: {toShorten: randomNum}
                   })
