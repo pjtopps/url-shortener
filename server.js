@@ -2,7 +2,6 @@ var fs = require('fs'),
     express = require('express'),
     http = require('http'),
     app = express(),
-    ans = {},
     url = "mongodb://petey:randomuser@ds143532.mlab.com:43532/urls",
     mongo = require('mongodb').MongoClient;
 
@@ -16,14 +15,17 @@ app.get('*', (req, res) => {
       replaced = toShorten.replace(/[.]/g, '-'),
       clientsIp = req.headers['x-forwarded-for'].split(',')[0],
       randomNum = Math.round(9999 * Math.random()),
+      ans = {},
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
-      
+  //check that the web-address passed as a parameter is valid    
   var check = http.request(options, function(r) {
     
-          if (r.headers['content-type']) {
+    //i.e. follwing code will only execute if web-address is valid
+    if (r.headers['content-type']) {
             console.log('passed check');
             
+            //now connect to database and update it by finding clients doc - unique-id being its ipAddress prop
             mongo.connect(url, function(err, db) {
               if (err) throw err;
               
