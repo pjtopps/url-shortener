@@ -27,15 +27,25 @@ app.get('*', (req, res) => {
               
               var collection = db.collection('ips');
               
-              var cursor = collection.find({}).toArray();
-              console.log(cursor);
+              /**/
               
-              /*collection.insertOne({
-                ipAddress: req.headers['x-forwarded-for'].split(',')[0]
-              });*/
-              
-              //var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray();
-              //console.log(client);
+              var client = collection.find({ipAdress: req.headers['x-forwarded-for'].split(',')[0]}).toArray(function(err, docs) {
+                if (docs.length === 0) {
+                  console.log('a new addition...');
+                  
+                  var randomNum = (9999 * Math.random()).round();
+                  
+                  collection.insertOne({
+                    ipAddress: req.headers['x-forwarded-for'].split(',')[0],
+                    urls: {
+                      [toShorten]: randomNum
+                    }
+                  });
+                }
+                else {
+                  
+                }
+              });
               
               db.close();
             });
