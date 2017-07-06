@@ -37,8 +37,13 @@ app.get('*', (req, res) => {
       .toArray(function(err, docs) {
       //if the param IS a code exists in the database...
       if (docs[0][toShorten]) {
+        //HOW THE FUCK TO REDIRECT??
         console.log('in here');
-        http.request({method: 'GET', host: toShorten, port: 80, path: '/'}, function(returned) {
+        console.log(docs);
+        //var host = 
+        http.request({method: 'GET', host: docs[0][toShorten], port: 80, path: '/'}, function(returned) {
+          console.log('further in');
+          console.log(returned);
           res.send(returned);
           db.close();
         })
