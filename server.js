@@ -35,41 +35,40 @@ app.get('*', (req, res) => {
       _id: 0
     })
       .toArray(function(err, docs) {
-      
       //if the param IS a code exists in the database...
       if (docs[0][toShorten]) {
         
       }
       else {
-        //check if the 
+        console.log('reached here');
+        //check if the param is a valid web-address
         var check = http.request(options, function(r) {
-    
+          if (!r.headers['content-type']) {
+            console.log('invalid');
+            db.close();
+            res.send('That is not a valid web-address');
+          }
+          
           //i.e. follwing code will only execute if web-address is valid
-          if (r.headers['content-type']) {
+          else {
             console.log('passed check');
 
-            //now connect to database and update it by finding clients doc - unique-id being its ipAddress prop
-            mongo.connect(url, function(err, db) {
-              if (err) throw err;
+            //now update database by finding clients doc - unique-id being its ipAddress prop
+            collection.update({
+              ipAddress: clientsIp
+            }, {
+              $set: {[randomNum]: toShorten}
+            }, {
+              'upsert': true
+            })
+              .then(function() {
+              console.log('got to be here');
 
-              var collection = db.collection('ips');
+              ans["Original Url"] = toShorten;
+              ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
 
-              collection.update({
-                ipAddress: clientsIp
-              }, {
-                $set: {[randomNum]: toShorten}
-              }, {
-                'upsert': true
-              })
-                .then(function() {
-                console.log('got to be here');
-
-                ans["Original Url"] = toShorten;
-                ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
-
-                res.send(ans);
-                db.close();
-              });
+              db.close();
+              res.send(ans);
             });
           }
         });
