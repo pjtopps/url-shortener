@@ -27,15 +27,19 @@ app.get('*', (req, res) => {
     var collection = db.collection('ips');
     
     collection.find({
-      ipAdress: clientsIp
+      ipAddress: clientsIp
+    })
+      .project({
+      
     })
       .toArray(function(err, docs) {
+      console.log(clientsIp);
       console.log(docs);
     });
     
   });
   
-  
+  /*
   //check that the web-address passed as a parameter is valid    
   var check = http.request(options, function(r) {
     
@@ -73,7 +77,7 @@ app.get('*', (req, res) => {
       });
   
   check.end();
-  
+  */
 });
 
 app.listen(process.env.PORT, function () {
