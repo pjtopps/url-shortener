@@ -7,7 +7,9 @@ var fs = require('fs'),
 
 app.use(express.static('public'));
 
-
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/views/index.html');
+})
 
 app.get('*', (req, res) => {
   
@@ -42,7 +44,9 @@ app.get('*', (req, res) => {
                 console.log('got to be here');
                 
                 ans["Original Url"] = toShorten;
-                ans["Shortened Url"] = 
+                ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
+                
+                res.send(ans);
                 db.close();
               });
               
