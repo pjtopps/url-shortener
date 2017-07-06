@@ -38,6 +38,7 @@ app.get('*', (req, res) => {
       //if the param IS a code exists in the database...redirect
       if (docs[0][toShorten]) {
         res.redirect('https://' + docs[0][toShorten]);
+        db.close();
       }
       
       //if NOT:
@@ -62,18 +63,19 @@ app.get('*', (req, res) => {
             ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
 
             res.send(ans);
+            db.close();
           });
         });
         
         //inform client if their param is not a valid web-address
         check.on('error', (e) => {
           res.send('That is not a valid web-address');
+          db.close();
         });
         
         check.end();
       }
     });
-    db.close();
   });
 });
 
