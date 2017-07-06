@@ -40,38 +40,38 @@ app.get('*', (req, res) => {
         
       }
       else {
-        console.log('reached here');
         //check if the param is a valid web-address
         var check = http.request(options, function(r) {
-          if (!r.headers['content-type']) {
-            console.log('invalid');
+          console.log('passed check');
+
+          //now update database by finding clients doc - unique-id being its ipAddress prop
+          collection.update({
+            ipAddress: clientsIp
+          }, {
+            $set: {[randomNum]: toShorten}
+          }, {
+            'upsert': true
+          })
+            .then(function() {
+            console.log('got to be here');
+
+            //set up object to return to the client
+            ans["Original Url"] = toShorten;
+            ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
+
             db.close();
-            res.send('That is not a valid web-address');
-          }
-          
-          //i.e. follwing code will only execute if web-address is valid
-          else {
-            console.log('passed check');
-
-            //now update database by finding clients doc - unique-id being its ipAddress prop
-            collection.update({
-              ipAddress: clientsIp
-            }, {
-              $set: {[randomNum]: toShorten}
-            }, {
-              'upsert': true
-            })
-              .then(function() {
-              console.log('got to be here');
-
-              ans["Original Url"] = toShorten;
-              ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
-
-              db.close();
-              res.send(ans);
-            });
-          }
+            res.send(ans);
+          });
         });
+        
+        //inform client if their param is not a valid web-address
+        check.on('error', (e) => {
+          console.log(e);
+          db.close();
+          res.send('That is not a valid web-address');
+          console.l
+        });
+        
         check.end();
       }
     });
