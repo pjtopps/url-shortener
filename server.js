@@ -20,6 +20,22 @@ app.get('*', (req, res) => {
       ans = {},
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
+  //first check whether the parameter is a url code in the database.
+  mongo.connect(url, function(err, db) {
+    if (err) throw err;
+    
+    var collection = db.collection('ips');
+    
+    collection.find({
+      ipAdress: clientsIp
+    })
+      .project({
+      []
+    })
+    
+  });
+  
+  
   //check that the web-address passed as a parameter is valid    
   var check = http.request(options, function(r) {
     
@@ -36,7 +52,7 @@ app.get('*', (req, res) => {
               collection.update({
                 ipAddress: clientsIp
               }, {
-                $set: {[replaced]: randomNum}
+                $set: {[randomNum]: toShorten}
               }, {
                 'upsert': true
               })
