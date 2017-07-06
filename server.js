@@ -20,23 +20,62 @@ app.get('*', (req, res) => {
       ans = {},
       options = {method: 'HEAD', host: toShorten, port: 80, path: '/'};
   
-  //first check whether the parameter is a url code in the database.
+  
   mongo.connect(url, function(err, db) {
     if (err) throw err;
     
     var collection = db.collection('ips');
     
+    //first check whether the parameter is a url code in the database.
     collection.find({
       ipAddress: clientsIp
     })
       .project({
-      
+      [toShorten]: 1,
+      _id: 0
     })
       .toArray(function(err, docs) {
-      console.log(clientsIp);
-      console.log(docs);
-    });
+      
+      //if the param IS a code exists in the database...
+      if (docs[0][toShorten]) {
+        
+      }
+      else {
+        //check if the 
+        var check = http.request(options, function(r) {
     
+          //i.e. follwing code will only execute if web-address is valid
+          if (r.headers['content-type']) {
+            console.log('passed check');
+
+            //now connect to database and update it by finding clients doc - unique-id being its ipAddress prop
+            mongo.connect(url, function(err, db) {
+              if (err) throw err;
+
+              var collection = db.collection('ips');
+
+              collection.update({
+                ipAddress: clientsIp
+              }, {
+                $set: {[randomNum]: toShorten}
+              }, {
+                'upsert': true
+              })
+                .then(function() {
+                console.log('got to be here');
+
+                ans["Original Url"] = toShorten;
+                ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
+
+                res.send(ans);
+                db.close();
+              });
+            });
+          }
+        });
+        check.end();
+      }
+    });
   });
   
   /*
