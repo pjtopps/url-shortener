@@ -37,8 +37,14 @@ app.get('*', (req, res) => {
       .toArray(function(err, docs) {
       //if the param IS a code exists in the database...
       if (docs[0][toShorten]) {
-        
+        console.log('in here');
+        http.request({method: 'GET', host: toShorten, port: 80, path: '/'}, function(returned) {
+          res.send(returned);
+          db.close();
+        })
       }
+      
+      //if param NOT a code in the database
       else {
         //check if the param is a valid web-address
         var check = http.request(options, function(r) {
@@ -66,56 +72,14 @@ app.get('*', (req, res) => {
         
         //inform client if their param is not a valid web-address
         check.on('error', (e) => {
-          console.log(e);
           db.close();
           res.send('That is not a valid web-address');
-          console.l
         });
         
         check.end();
       }
     });
   });
-  
-  /*
-  //check that the web-address passed as a parameter is valid    
-  var check = http.request(options, function(r) {
-    
-    //i.e. follwing code will only execute if web-address is valid
-    if (r.headers['content-type']) {
-            console.log('passed check');
-            
-            //now connect to database and update it by finding clients doc - unique-id being its ipAddress prop
-            mongo.connect(url, function(err, db) {
-              if (err) throw err;
-              
-              var collection = db.collection('ips');
-              
-              collection.update({
-                ipAddress: clientsIp
-              }, {
-                $set: {[randomNum]: toShorten}
-              }, {
-                'upsert': true
-              })
-                .then(function() {
-                console.log('got to be here');
-                
-                ans["Original Url"] = toShorten;
-                ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
-                
-                res.send(ans);
-                db.close();
-              });
-              
-            });
-            
-          }
-    
-      });
-  
-  check.end();
-  */
 });
 
 app.listen(process.env.PORT, function () {
