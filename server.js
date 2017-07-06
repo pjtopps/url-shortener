@@ -29,9 +29,9 @@ app.get('*', (req, res) => {
     collection.find({
       ipAdress: clientsIp
     })
-      .project({
-      []
-    })
+      .toArray(function(err, docs) {
+      console.log(docs);
+    });
     
   });
   
