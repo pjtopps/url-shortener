@@ -40,6 +40,9 @@ app.get('*', (req, res) => {
               })
                 .then(function() {
                 console.log('got to be here');
+                
+                ans["Original Url"] = toShorten;
+                ans["Shortened Url"] = 
                 db.close();
               });
               
