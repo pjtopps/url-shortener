@@ -35,19 +35,18 @@ app.get('*', (req, res) => {
       _id: 0
     })
       .toArray(function(err, docs) {
-      //if the param IS a code exists in the database...
+      //if the param IS a code exists in the database...redirect
       if (docs[0][toShorten]) {
         res.redirect('https://' + docs[0][toShorten]);
-        db.close();
       }
       
-      //if param NOT a code in the database
+      //if NOT:
       else {
-        //check if the param is a valid web-address
+        console.log('am here');
+        //check if the param is a valid web-address by requesting header info. If gives an error, the web-address can't be valid
         var check = http.request(options, function(r) {
-          console.log('passed check');
-
-          //now update database by finding clients doc - unique-id being its ipAddress prop
+          console.log('now here');
+          //now update database by finding clients doc (unique-id being its ipAddress prop)
           collection.update({
             ipAddress: clientsIp
           }, {
@@ -62,14 +61,12 @@ app.get('*', (req, res) => {
             ans["Original Url"] = toShorten;
             ans["Shortened Url"] = "https://fcc-urlshortener.glitch.me/" + randomNum;
 
-            db.close();
             res.send(ans);
           });
         });
         
         //inform client if their param is not a valid web-address
         check.on('error', (e) => {
-          db.close();
           res.send('That is not a valid web-address');
         });
         
